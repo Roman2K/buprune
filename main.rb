@@ -16,8 +16,8 @@ ARGV.each do |dir|
       $?.success? or raise "rclone lsjson failed"
     }
   }.select { |e|
-    (name = File.basename(e.fetch("Name"), ".*")) =~ BACKUP_DIR_RE or next false
-    date = Time.strptime(name+"UTC", FILE_TIME_FMT+"%Z").getlocal.to_date
+    File.basename(e.fetch("Name"), ".*") =~ BACKUP_DIR_RE or next false
+    date = Time.strptime($&+"UTC", FILE_TIME_FMT+"%Z").getlocal.to_date
     today - date > max_days
   }.map { |e|
     "#{dir}/#{e.fetch "Path"}"
